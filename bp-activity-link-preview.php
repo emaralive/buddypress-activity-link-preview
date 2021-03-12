@@ -269,4 +269,4 @@ function bp_activity_link_preview_content_body($content, $activity) {
 	return $content;
 }
 
-add_filter( 'bp_get_activity_content_body', 'bp_activity_link_preview_content_body', 100, 2 );
+add_filter( 'bp_get_activity_content_body', 'bp_activity_link_preview_content_body', 8, 2 );
