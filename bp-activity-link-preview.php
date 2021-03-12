@@ -186,12 +186,20 @@ function bp_activity_link_parse_url( $url ) {
 	/**
 	 * Filters parsed URL data.
 	 *
-	 * @since BuddyBoss 1.3.2
+	 * @since BuddyBoss 1.0.0
 	 * @param array $parsed_url_data Parse URL data.
 	 */
 	return apply_filters( 'bp_activity_link_parse_url', $parsed_url_data );
 }
 
+
+/**
+ * Save link preview data into activity meta key "_bp_activity_link_preview_data"
+ *
+ * @since BuddyPress 1.0.0
+ *
+ * @param $activity
+ */
 function bp_activity_link_preview_save_link_data( $activity ){
 	
 	if ( isset($_POST['link_url']) && isset($_POST['link_title']) && isset($_POST['link_description']) && isset($_POST['link_image'])) {
@@ -223,3 +231,42 @@ function bp_activity_link_preview_save_link_data( $activity ){
 
 
 add_action( 'bp_activity_after_save', 'bp_activity_link_preview_save_link_data', 10, 1 );
+
+
+function bp_activity_link_preview_content_body($content, $activity) {
+	
+	$activity_id = $activity->id;
+
+	$preview_data = bp_activity_get_meta( $activity_id, '_bp_activity_link_preview_data', true );
+
+	if ( empty( $preview_data['url'] ) ) {
+		return $content;
+	}
+
+	$preview_data = bp_parse_args(
+		$preview_data,
+		array(
+			'title'       => '',
+			'description' => '',
+		)
+	);
+
+	$description = $preview_data['description'];
+	$read_more   = ' &hellip; <a class="activity-link-preview-more" href="' . esc_url( $preview_data['url'] ) . '" target="_blank" rel="nofollow">' . __( 'Continue reading', 'buddyboss' ) . '</a>';
+	$description = wp_trim_words( $description, 40, $read_more );
+
+	$content = make_clickable( $content );
+
+	$content .= '<div class="activity-link-preview-container">';
+	$content .= '<p class="activity-link-preview-title"><a href="' . esc_url( $preview_data['url'] ) . '" target="_blank" rel="nofollow">' . esc_html( $preview_data['title'] ) . '</a></p>';
+	if ( ! empty( $preview_data['image_url'] ) ) {
+		$content .= '<div class="activity-link-preview-image">';
+		$content .= '<a href="' . esc_url( $preview_data['url'] ) . '" target="_blank"><img src="' . esc_url( $preview_data['image_url'] ) . '" /></a>';
+		$content .= '</div>';
+	}
+	$content .= '<div class="activity-link-preview-excerpt"><p>' . $description . '</p></div>';
+	$content .= '</div>';
+	return $content;
+}
+
+add_filter( 'bp_get_activity_content_body', 'bp_activity_link_preview_content_body', 100, 2 );
