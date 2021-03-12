@@ -5,7 +5,7 @@
  * @since             1.0.0 
  *
  * @wordpress-plugin
- * Plugin Name:       BuddyPress Acivity Link Preview
+ * Plugin Name:       BuddyPress Activity Link Preview
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-auto-friends/
  * Description:       BuddyPress activity link preview display as imag title and description from the site. when links are used in activity posts 
  * Version:           1.0.0
@@ -23,9 +23,9 @@ define( 'BP_ACTIVITY_LINK_PREVIEW_URL', plugin_dir_url( __FILE__ ) );
 define( 'BP_ACTIVITY_LINK_PREVIEW_PATH', plugin_dir_path( __FILE__ ) );
  
 function bp_activity_link_preview_enqueue_scripts() {
-	wp_enqueue_style( 'bp-acivity-link-preview-css',BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/css/bp-acivity-link-preview.css' );
+	wp_enqueue_style( 'bp-activity-link-preview-css',BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/css/bp-activity-link-preview.css' );
 	
-	wp_enqueue_script( 'bp-acivity-link-preview-js',BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/js/bp-acivity-link-preview.js', array( 'jquery' ), false );
+	wp_enqueue_script( 'bp-activity-link-preview-js',BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/js/bp-activity-link-preview.js', array( 'jquery' ), false );
 }
 add_action( 'wp_enqueue_scripts', 'bp_activity_link_preview_enqueue_scripts' );
 
@@ -191,3 +191,35 @@ function bp_activity_link_parse_url( $url ) {
 	 */
 	return apply_filters( 'bp_activity_link_parse_url', $parsed_url_data );
 }
+
+function bp_activity_link_preview_save_link_data( $activity ){
+	
+	if ( isset($_POST['link_url']) && isset($_POST['link_title']) && isset($_POST['link_description']) && isset($_POST['link_image'])) {
+		
+		$link_url   = ! empty( $_POST['link_url'] ) ? filter_var( $_POST['link_url'], FILTER_VALIDATE_URL ) : '';
+		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( $_POST['link_title'] ) : '';
+		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( $_POST['link_description'] ) : '';
+		$link_image       = ! empty( $_POST['link_image'] ) ? filter_var( $_POST['link_image'], FILTER_VALIDATE_URL ) : '';
+
+		
+		
+		$link_preview_data['url'] = $link_url;
+
+		if ( ! empty( $link_image ) ) {		
+			$link_preview_data['image_url'] = $link_image;			
+		}
+
+		if ( ! empty( $link_title ) ) {
+			$link_preview_data['title'] = $link_title;
+		}
+
+		if ( ! empty( $link_description ) ) {
+			$link_preview_data['description'] = $link_description;
+		}
+
+		bp_activity_update_meta( $activity->id, '_bp_activity_link_preview_data', $link_preview_data );
+	}
+}
+
+
+add_action( 'bp_activity_after_save', 'bp_activity_link_preview_save_link_data', 10, 1 );
