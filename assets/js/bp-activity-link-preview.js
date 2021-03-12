@@ -219,6 +219,10 @@
 					},
 					500
 				);
-		});		
+		});	
+
+		$(document).on('click', '#activity-close-link-suggestion', function() {					
+			$('.activity-url-scrapper-container').remove();					
+		});			
 	});
 })(jQuery);
