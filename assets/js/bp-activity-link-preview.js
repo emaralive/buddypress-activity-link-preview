@@ -211,5 +211,14 @@
 				
 			}
 		});
+		$(document).on('click', '#aw-whats-new-submit', function() {
+			
+			setTimeout(
+					function () {						
+						$('.activity-url-scrapper-container').remove();
+					},
+					500
+				);
+		});		
 	});
 })(jQuery);
