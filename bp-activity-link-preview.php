@@ -6,8 +6,8 @@
  *
  * @wordpress-plugin
  * Plugin Name:       BuddyPress Activity Link Preview
- * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-auto-friends/
- * Description:       BuddyPress activity link preview display as imag title and description from the site. when links are used in activity posts
+ * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-link-preview/
+ * Description:       BuddyPress activity link preview display as image title and description from the site. when links are used in activity posts
  * Version:           1.0.0
  * Author:            wbcomdesigns
  * Author URI:        https://wbcomdesigns.com/
@@ -17,22 +17,19 @@
  * Domain Path:       /languages
  */
 
-
-
 define( 'BP_ACTIVITY_LINK_PREVIEW_URL', plugin_dir_url( __FILE__ ) );
 define( 'BP_ACTIVITY_LINK_PREVIEW_PATH', plugin_dir_path( __FILE__ ) );
 
 function bp_activity_link_preview_enqueue_scripts() {
-	wp_enqueue_style( 'bp-activity-link-preview-css', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/css/bp-activity-link-preview.css' );
-
-	wp_enqueue_script( 'bp-activity-link-preview-js', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/js/bp-activity-link-preview.js', array( 'jquery' ), false );
+	wp_enqueue_style( 'bp-activity-link-preview-css', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/css/bp-activity-link-preview.css', array(), '1.0.0', 'all' );
+	wp_enqueue_script( 'bp-activity-link-preview-js', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/js/bp-activity-link-preview.js', array( 'jquery' ), '1.0.0' );
 }
 add_action( 'wp_enqueue_scripts', 'bp_activity_link_preview_enqueue_scripts' );
 
 function bp_activity_parse_url_preview() {
 
 	// Get URL.
-	$url = filter_var( $_POST['url'], FILTER_VALIDATE_URL );
+	$url = ! empty( $_POST['url'] ) ? filter_var( wp_unslash( $_POST['url'] ), FILTER_VALIDATE_URL ) : '';
 
 	// Check if URL is validated.
 	if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
@@ -81,15 +78,15 @@ function bp_activity_link_parse_url( $url ) {
 		$response = wp_safe_remote_get(
 			$url,
 			array(
-				'user-agent' => '', // Default value being blocked by Cloudflare
+				'user-agent' => '', // Default value being blocked by Cloudflare.
 			)
 		);
 		$body     = wp_remote_retrieve_body( $response );
 
-		// if response is not empty
+		// if response is not empty.
 		if ( ! is_wp_error( $body ) && ! empty( $body ) ) {
 
-			// Load HTML to DOM Object
+			// Load HTML to DOM Object.
 			$dom = new DOMDocument();
 			@$dom->loadHTML( mb_convert_encoding( $body, 'HTML-ENTITIES', 'UTF-8' ) );
 
@@ -110,10 +107,10 @@ function bp_activity_link_parse_url( $url ) {
 			if ( is_array( $meta_tags ) && ! empty( $meta_tags ) ) {
 				foreach ( $meta_tags as $tag ) {
 					if ( is_array( $tag ) && ! empty( $tag ) ) {
-						if ( $tag[0] == 'og:title' ) {
+						if ( 'og:title' === $tag[0] ) {
 							$title = $tag[1];
 						}
-						if ( $tag[0] == 'og:description' || 'description' === strtolower( $tag[0] ) ) {
+						if ( 'og:description' === $tag[0] || 'description' === strtolower( $tag[0] ) ) {
 							$description = html_entity_decode( $tag[1], ENT_QUOTES, 'utf-8' );
 						}
 						if ( $tag[0] == 'og:image' ) {
@@ -123,13 +120,13 @@ function bp_activity_link_parse_url( $url ) {
 				}
 			}
 
-			// Parse DOM to get Title
+			// Parse DOM to get Title.
 			if ( empty( $title ) ) {
 				$nodes = $dom->getElementsByTagName( 'title' );
 				$title = $nodes->item( 0 )->nodeValue;
 			}
 
-			// Parse DOM to get Meta Description
+			// Parse DOM to get Meta Description.
 			if ( empty( $description ) ) {
 				$metas = $dom->getElementsByTagName( 'meta' );
 				for ( $i = 0; $i < $metas->length; $i ++ ) {
@@ -141,7 +138,7 @@ function bp_activity_link_parse_url( $url ) {
 				}
 			}
 
-			// Parse DOM to get Images
+			// Parse DOM to get Images.
 			$image_elements = $dom->getElementsByTagName( 'img' );
 			for ( $i = 0; $i < $image_elements->length; $i ++ ) {
 				$image = $image_elements->item( $i );
@@ -204,10 +201,10 @@ function bp_activity_link_preview_save_link_data( $activity ) {
 
 	if ( isset( $_POST['link_url'] ) && isset( $_POST['link_title'] ) && isset( $_POST['link_description'] ) && isset( $_POST['link_image'] ) ) {
 
-		$link_url         = ! empty( $_POST['link_url'] ) ? filter_var( $_POST['link_url'], FILTER_VALIDATE_URL ) : '';
-		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( $_POST['link_title'] ) : '';
-		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( $_POST['link_description'] ) : '';
-		$link_image       = ! empty( $_POST['link_image'] ) ? filter_var( $_POST['link_image'], FILTER_VALIDATE_URL ) : '';
+		$link_url         = ! empty( $_POST['link_url'] ) ? filter_var( wp_unslash( $_POST['link_url'] ), FILTER_VALIDATE_URL ) : '';
+		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( wp_unslash( $_POST['link_title'] ) ) : '';
+		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( wp_unslash( $_POST['link_description'] ) ) : '';
+		$link_image       = ! empty( $_POST['link_image'] ) ? filter_var( wp_unslash( $_POST['link_image'] ), FILTER_VALIDATE_URL ) : '';
 
 		$link_preview_data['url'] = $link_url;
 
