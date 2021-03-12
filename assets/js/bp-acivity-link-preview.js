@@ -80,6 +80,14 @@
 		var image 		= response.images[0];
 		var image_count = response.images.length;
 		
+		bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
+							link_success		: true,
+							link_title			: response.title,
+							link_description	: response.description,
+							link_images			: response.images,
+							link_image_index	: 0,							
+							});
+		
 		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image 1&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div></div>';
 		
 		$( '#whats-new-attachments .activity-url-scrapper-container' ).remove();
@@ -120,16 +128,83 @@
 
 		return responseUrl;
 	}
+	
+	var setURLNextPreviousResponse = function() {
+		if ( $( '#whats-new-attachments' ).length === 0 ) {
+			$( '#whats-new-content').after( '<div id="whats-new-attachments"></div>');
+		}
+		
+		
+		var bp_activity_link_preview = bp.Nouveau.getStorage( 'bp-activity-link-preview','link-preview' );
+							
+		var link_image_index 	= bp_activity_link_preview.link_image_index;
+		var title 				= bp_activity_link_preview.link_title;
+		var description 		= bp_activity_link_preview.link_description;
+		var image 				= bp_activity_link_preview.link_images[link_image_index];
+		var image_count 		= bp_activity_link_preview.link_images.length;
+		
+		
+		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image ' + (link_image_index + 1) + '&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div></div>';
+		
+		$( '#whats-new-attachments .activity-url-scrapper-container' ).remove();
+		$( '#whats-new-attachments' ).append(link_preview);
+	}
+	
 	$(document).ready(function() {
+		
 		$(document).on('keyup', '#whats-new', function() {
-			
 			setTimeout(
-					function () {
-						console.log($('#whats-new').val());
+					function () {						
 						scrap_URL( $('#whats-new').val() );
 					},
 					500
 				);
+		});
+		$(document).on('click', '#activity-url-prevPicButton', function() {
+			var bp_activity_link_preview = bp.Nouveau.getStorage( 'bp-activity-link-preview','link-preview' );
+			var imageIndex 			= bp_activity_link_preview.link_image_index;
+			var images     			= bp_activity_link_preview.link_images;
+			
+			var link_success     	= bp_activity_link_preview.link_success;
+			var link_title     		= bp_activity_link_preview.link_title;
+			var link_description	= bp_activity_link_preview.link_description;
+						
+			if ( imageIndex > 0 ) {				
+				
+				bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
+							link_success		: true,
+							link_title			: link_title,
+							link_description	: link_description,
+							link_images			: images,
+							link_image_index	: imageIndex - 1,							
+							});
+				setURLNextPreviousResponse();
+			}
+		});
+		
+		$(document).on('click', '#activity-url-nextPicButton', function() {
+			var bp_activity_link_preview = bp.Nouveau.getStorage( 'bp-activity-link-preview','link-preview' );
+			console.log(bp_activity_link_preview);
+			
+			var imageIndex 			= bp_activity_link_preview.link_image_index;
+			var images     			= bp_activity_link_preview.link_images;
+			
+			var link_success     	= bp_activity_link_preview.link_success;
+			var link_title     		= bp_activity_link_preview.link_title;
+			var link_description	= bp_activity_link_preview.link_description;
+			
+			if ( imageIndex < images.length - 1 ) {
+				
+				bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
+							link_success		: true,
+							link_title			: link_title,
+							link_description	: link_description,
+							link_images			: images,
+							link_image_index	: imageIndex + 1,							
+							});
+				setURLNextPreviousResponse();
+				
+			}
 		});
 	});
 })(jQuery);
