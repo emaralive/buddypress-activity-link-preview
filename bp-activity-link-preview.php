@@ -32,7 +32,8 @@ add_action( 'wp_enqueue_scripts', 'bp_activity_link_preview_enqueue_scripts' );
 function bp_activity_parse_url_preview(){
 
 	// Get URL.
-	$url = $_POST['url'];
+	$url = filter_var( $_POST['url'], FILTER_VALIDATE_URL )
+	
 
 	// Check if URL is validated.
 	if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
