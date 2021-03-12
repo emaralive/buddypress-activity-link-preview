@@ -82,13 +82,14 @@
 		
 		bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
 							link_success		: true,
+							link_url			: url,
 							link_title			: response.title,
 							link_description	: response.description,
 							link_images			: response.images,
 							link_image_index	: 0,							
 							});
 		
-		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image 1&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div></div>';
+		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image 1&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div><div class="bp-link-preview-hidden"><input type="hidden" name="link_url" value="' + url + '" /><input type="hidden" name="link_title" value="' + title + '" /><input type="hidden" name="link_description" value="' + description + '" /><input type="hidden" name="link_image" value="' + image + '" /></div></div>';
 		
 		$( '#whats-new-attachments .activity-url-scrapper-container' ).remove();
 		$( '#whats-new-attachments' ).append(link_preview);
@@ -138,13 +139,14 @@
 		var bp_activity_link_preview = bp.Nouveau.getStorage( 'bp-activity-link-preview','link-preview' );
 							
 		var link_image_index 	= bp_activity_link_preview.link_image_index;
+		var url     			= bp_activity_link_preview.link_url;
 		var title 				= bp_activity_link_preview.link_title;
 		var description 		= bp_activity_link_preview.link_description;
 		var image 				= bp_activity_link_preview.link_images[link_image_index];
 		var image_count 		= bp_activity_link_preview.link_images.length;
 		
 		
-		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image ' + (link_image_index + 1) + '&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div></div>';
+		var link_preview = '<div class="activity-url-scrapper-container"><div class="activity-link-preview-container"><p class="activity-link-preview-title">' + title + '</p><div id="activity-url-scrapper-img-holder"><div class="activity-link-preview-image"><img src="' + image + '"><a title="Cancel Preview Image" href="#" id="activity-link-preview-close-image"><i class="bb-icons bb-icon-close"></i></a></div><div class="activity-url-thumb-nav"><button type="button" id="activity-url-prevPicButton"><span class="bb-icons bb-icon-angle-left"></span></button><button type="button" id="activity-url-nextPicButton"><span class="bb-icons bb-icon-angle-right"></span></button><div id="activity-url-scrapper-img-count">Image ' + (link_image_index + 1) + '&nbsp;of&nbsp;' + image_count + '</div></div></div><div class="activity-link-preview-excerpt"><p>' + description + '</p></div><a title="Cancel Preview" href="#" id="activity-close-link-suggestion"><i class="bb-icons bb-icon-close"></i></a></div><div class="bp-link-preview-hidden"><input type="hidden" name="link_url" value="' + url + '" /><input type="hidden" name="link_title" value="' + title + '" /><input type="hidden" name="link_description" value="' + description + '" /><input type="hidden" name="link_image" value="' + image + '" /></div></div>';
 		
 		$( '#whats-new-attachments .activity-url-scrapper-container' ).remove();
 		$( '#whats-new-attachments' ).append(link_preview);
@@ -164,7 +166,7 @@
 			var bp_activity_link_preview = bp.Nouveau.getStorage( 'bp-activity-link-preview','link-preview' );
 			var imageIndex 			= bp_activity_link_preview.link_image_index;
 			var images     			= bp_activity_link_preview.link_images;
-			
+			var url     			= bp_activity_link_preview.link_url;
 			var link_success     	= bp_activity_link_preview.link_success;
 			var link_title     		= bp_activity_link_preview.link_title;
 			var link_description	= bp_activity_link_preview.link_description;
@@ -173,6 +175,7 @@
 				
 				bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
 							link_success		: true,
+							link_url			: url,
 							link_title			: link_title,
 							link_description	: link_description,
 							link_images			: images,
@@ -188,6 +191,7 @@
 			
 			var imageIndex 			= bp_activity_link_preview.link_image_index;
 			var images     			= bp_activity_link_preview.link_images;
+			var url     			= bp_activity_link_preview.link_url;
 			
 			var link_success     	= bp_activity_link_preview.link_success;
 			var link_title     		= bp_activity_link_preview.link_title;
@@ -197,6 +201,7 @@
 				
 				bp.Nouveau.setStorage( 'bp-activity-link-preview','link-preview',{
 							link_success		: true,
+							link_url			: url,
 							link_title			: link_title,
 							link_description	: link_description,
 							link_images			: images,
