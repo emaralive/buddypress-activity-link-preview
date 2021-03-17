@@ -1,4 +1,4 @@
-=== BuddyPress Activity Link Preview ===
+=== Activity Link Preview For BuddyPress ===
 Contributors: wbcomdesigns, vapvarun
 Donate link: https://wbcomdesigns.com/donate/
 Tags: buddypress, Activity, Link Preview
