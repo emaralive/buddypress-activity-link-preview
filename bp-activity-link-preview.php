@@ -29,7 +29,7 @@ add_action( 'wp_enqueue_scripts', 'bp_activity_link_preview_enqueue_scripts' );
 function bp_activity_parse_url_preview() {
 
 	// Get URL.
-	$url = ! empty( $_POST['url'] ) ? filter_var( wp_unslash( $_POST['url'] ), FILTER_VALIDATE_URL ) : '';
+	$url = ! empty( $_POST['url'] ) ? filter_var( $_POST['url'], FILTER_VALIDATE_URL ) : '';
 
 	// Check if URL is validated.
 	if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
@@ -201,10 +201,10 @@ function bp_activity_link_preview_save_link_data( $activity ) {
 
 	if ( isset( $_POST['link_url'] ) && isset( $_POST['link_title'] ) && isset( $_POST['link_description'] ) && isset( $_POST['link_image'] ) ) {
 
-		$link_url         = ! empty( $_POST['link_url'] ) ? filter_var( wp_unslash( $_POST['link_url'] ), FILTER_VALIDATE_URL ) : '';
-		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( wp_unslash( $_POST['link_title'] ) ) : '';
-		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( wp_unslash( $_POST['link_description'] ) ) : '';
-		$link_image       = ! empty( $_POST['link_image'] ) ? filter_var( wp_unslash( $_POST['link_image'] ), FILTER_VALIDATE_URL ) : '';
+		$link_url         = ! empty( $_POST['link_url'] ) ? esc_url( $_POST['link_url'] ) : '';
+		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( wp_unslash( $_POST['link_title'] ), FILTER_SANITIZE_STRING ) : '';
+		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( wp_unslash( $_POST['link_description'] ), FILTER_SANITIZE_STRING ) : '';
+		$link_image       = ! empty( $_POST['link_image'] ) ? esc_url( $_POST['link_image'] ) : '';
 
 		$link_preview_data['url'] = $link_url;
 
