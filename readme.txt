@@ -10,8 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-This plugin does the following:
-It will allow you display link preivews inside the BuddyPress Activities.
+It will allow you display link preivews inside the BuddyPress Activities. Activity Link Preview uses OG meta data to generate link preview and display nicely inside the activity after posting urls. 
 
 == Installation ==
 
