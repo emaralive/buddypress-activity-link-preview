@@ -233,18 +233,19 @@ function bp_activity_link_preview_content_body( $content, $activity ) {
 	$activity_id = $activity->id;
 
 	$preview_data = bp_activity_get_meta( $activity_id, '_bp_activity_link_preview_data', true );
-
-	if ( empty( $preview_data['url'] ) ) {
-		return $content;
-	}
-
 	$preview_data = bp_parse_args(
 		$preview_data,
 		array(
 			'title'       => '',
 			'description' => '',
 		)
-	);
+	);	
+	
+	if ( empty( $preview_data['url'] ) || ( empty( trim($preview_data['title']) ) &&  empty( trim($preview_data['description']) ) ) ) {
+		return $content;
+	}
+
+	
 
 	$description = $preview_data['description'];
 	$read_more   = ' &hellip; <a class="activity-link-preview-more" href="' . esc_url( $preview_data['url'] ) . '" target="_blank" rel="nofollow">' . __( 'Continue reading', 'buddypress-activity-link-preview' ) . '</a>';
