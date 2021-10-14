@@ -1,10 +1,7 @@
 <?php
 /**
+ * BuddyPress Activity Link preview
  *
- * @link              https://wbcomdesigns.com/
- * @since             1.0.0
- *
- * @wordpress-plugin
  * Plugin Name:       Activity Link Preview For BuddyPress
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-link-preview/
  * Description:       BuddyPress activity link preview display as image title and description from the site. when links are used in activity posts
@@ -15,21 +12,27 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       buddypress-activity-link-preview
  * Domain Path:       /languages
+ *
+ * @package           Buddypress-activity-link-preview
+ * @link              https://wbcomdesigns.com/
+ * @since             1.0.0
  */
 
 define( 'BP_ACTIVITY_LINK_PREVIEW_URL', plugin_dir_url( __FILE__ ) );
 define( 'BP_ACTIVITY_LINK_PREVIEW_PATH', plugin_dir_path( __FILE__ ) );
 
+/** Bp_activity_link_preview_enqueue_scripts */
 function bp_activity_link_preview_enqueue_scripts() {
 	wp_enqueue_style( 'bp-activity-link-preview-css', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/css/bp-activity-link-preview.css', array(), '1.0.0', 'all' );
 	wp_enqueue_script( 'bp-activity-link-preview-js', BP_ACTIVITY_LINK_PREVIEW_URL . 'assets/js/bp-activity-link-preview.js', array( 'jquery' ), '1.0.0' );
 }
 add_action( 'wp_enqueue_scripts', 'bp_activity_link_preview_enqueue_scripts' );
 
+/** Bp_activity_parse_url_preview */
 function bp_activity_parse_url_preview() {
 
 	// Get URL.
-	$url = ! empty( $_POST['url'] ) ? filter_var( $_POST['url'], FILTER_VALIDATE_URL ) : '';
+	$url = ! empty( $_POST['url'] ) ? filter_var( $_POST['url'], FILTER_VALIDATE_URL ) : '';// phpcs:ignore
 
 	// Check if URL is validated.
 	if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
@@ -51,8 +54,11 @@ function bp_activity_parse_url_preview() {
 add_action( 'wp_ajax_bp_activity_parse_url_preview', 'bp_activity_parse_url_preview' );
 add_action( 'wp_ajax_nopriv_bp_activity_parse_url_preview', 'bp_activity_parse_url_preview' );
 
-
-
+/**
+ * Bp_activity_link_parse_url
+ *
+ * @param url $url url.
+ */
 function bp_activity_link_parse_url( $url ) {
 	$cache_key = 'bp_activity_oembed_' . md5( serialize( $url ) );
 
@@ -113,7 +119,7 @@ function bp_activity_link_parse_url( $url ) {
 						if ( 'og:description' === $tag[0] || 'description' === strtolower( $tag[0] ) ) {
 							$description = html_entity_decode( $tag[1], ENT_QUOTES, 'utf-8' );
 						}
-						if ( $tag[0] == 'og:image' ) {
+						if ( 'og:image' === $tag[0] ) {
 							$images[] = $tag[1];
 						}
 					}
@@ -195,7 +201,7 @@ function bp_activity_link_parse_url( $url ) {
  *
  * @since BuddyPress 1.0.0
  *
- * @param $activity
+ * @param activity $activity activity.
  */
 function bp_activity_link_preview_save_link_data( $activity ) {
 
@@ -227,7 +233,13 @@ function bp_activity_link_preview_save_link_data( $activity ) {
 
 add_action( 'bp_activity_after_save', 'bp_activity_link_preview_save_link_data', 10, 1 );
 
-
+/**
+ * Bp_activity_link_preview_content_body
+ *
+ * @since BuddyPress 1.0.0
+ * @param content  $content content.
+ * @param activity $activity activity.
+ */
 function bp_activity_link_preview_content_body( $content, $activity ) {
 
 	$activity_id = $activity->id;
@@ -239,13 +251,11 @@ function bp_activity_link_preview_content_body( $content, $activity ) {
 			'title'       => '',
 			'description' => '',
 		)
-	);	
-	
-	if ( empty( $preview_data['url'] ) || ( empty( trim($preview_data['title']) ) &&  empty( trim($preview_data['description']) ) ) ) {
+	);
+
+	if ( empty( $preview_data['url'] ) || ( empty( trim( $preview_data['title'] ) ) && empty( trim( $preview_data['description'] ) ) ) ) {
 		return $content;
 	}
-
-	
 
 	$description = $preview_data['description'];
 	$read_more   = ' &hellip; <a class="activity-link-preview-more" href="' . esc_url( $preview_data['url'] ) . '" target="_blank" rel="nofollow">' . __( 'Continue reading', 'buddypress-activity-link-preview' ) . '</a>';
