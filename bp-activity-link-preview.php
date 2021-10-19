@@ -276,3 +276,33 @@ function bp_activity_link_preview_content_body( $content, $activity ) {
 }
 
 add_filter( 'bp_get_activity_content_body', 'bp_activity_link_preview_content_body', 8, 2 );
+
+/**
+ *  Check if buddypress activate.
+ */
+function bp_activity_link_preview_requires_buddypress() {
+	if ( ! class_exists( 'Buddypress' ) ) {
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+		add_action( 'admin_notices', 'bp_activity_link_preview_required_plugin_admin_notice' );
+		unset( $_GET['activate'] );
+	}
+}
+
+add_action( 'admin_init', 'bp_activity_link_preview_requires_buddypress' );
+/**
+ * Throw an Alert to tell the Admin why it didn't activate.
+ *
+ * @author wbcomdesigns
+ * @since  1.2.0
+ */
+function bp_activity_link_preview_required_plugin_admin_notice() {
+	$bpquotes_plugin = esc_html__( 'Activity Link Preview For BuddyPress', 'buddypress-activity-link-preview' );
+	$bp_plugin       = esc_html__( 'BuddyPress', 'buddypress-activity-link-preview' );
+	echo '<div class="error"><p>';
+	/* translators: %s: */
+	echo sprintf( esc_html__( '%1$s is ineffective as it requires %2$s to be installed and active.', 'buddypress-activity-link-preview' ), '<strong>' . esc_html( $bpquotes_plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
+	echo '</p></div>';
+	if ( isset( $_GET['activate'] ) ) {
+		unset( $_GET['activate'] );
+	}
+}
