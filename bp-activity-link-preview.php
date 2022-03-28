@@ -306,3 +306,19 @@ function bp_activity_link_preview_required_plugin_admin_notice() {
 		unset( $_GET['activate'] );
 	}
 }
+
+add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_link_preview_data_embed_rest_api', 10, 3 );
+
+/**
+ * Embed bp activity link preview data in rest api activity endpoint.
+ *
+ * @param  object $response get response data.
+ * @param  object $request get request data.
+ * @param  array  $activity get activity data.
+ * @return $response
+ */
+function bp_activity_link_preview_data_embed_rest_api( $response, $request, $activity ) {
+	$bp_activity_link_data      = bp_activity_get_meta( $activity->id, '_bp_activity_link_preview_data', true );
+	$response->data['bp_activity_link'] = $bp_activity_link_data;
+	return $response;
+}
