@@ -204,13 +204,17 @@ function bp_activity_link_parse_url( $url ) {
  * @param activity $activity activity.
  */
 function bp_activity_link_preview_save_link_data( $activity ) {
-
+	$bp_activity_nonce = isset( $_POST['_wpnonce_post_update'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce_post_update'] ) ) : '';
+	// Check for nonce security.
+	if ( ! wp_verify_nonce( $bp_activity_nonce, 'post_update' ) ) {
+		die( 'Busted!' );
+	}
 	if ( isset( $_POST['link_url'] ) && isset( $_POST['link_title'] ) && isset( $_POST['link_description'] ) && isset( $_POST['link_image'] ) ) {
 
-		$link_url         = ! empty( $_POST['link_url'] ) ? esc_url( $_POST['link_url'] ) : '';
+		$link_url         = ! empty( $_POST['link_url'] ) ? sanitize_text_field( wp_unslash( $_POST['link_url'] ) ) : '';
 		$link_title       = ! empty( $_POST['link_title'] ) ? filter_var( wp_unslash( $_POST['link_title'] ), FILTER_SANITIZE_STRING ) : '';
 		$link_description = ! empty( $_POST['link_description'] ) ? filter_var( wp_unslash( $_POST['link_description'] ), FILTER_SANITIZE_STRING ) : '';
-		$link_image       = ! empty( $_POST['link_image'] ) ? esc_url( $_POST['link_image'] ) : '';
+		$link_image       = ! empty( $_POST['link_image'] ) ? sanitize_text_field( wp_unslash( $_POST['link_image'] ) ) : '';
 
 		$link_preview_data['url'] = $link_url;
 
@@ -284,7 +288,10 @@ function bp_activity_link_preview_requires_buddypress() {
 	if ( ! class_exists( 'Buddypress' ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		add_action( 'admin_notices', 'bp_activity_link_preview_required_plugin_admin_notice' );
-		unset( $_GET['activate'] );
+		if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
+			$activate = filter_input( INPUT_GET, 'activate' );
+			unset( $activate );
+		}
 	}
 }
 
@@ -302,8 +309,9 @@ function bp_activity_link_preview_required_plugin_admin_notice() {
 	/* translators: %s: */
 	echo sprintf( esc_html__( '%1$s is ineffective as it requires %2$s to be installed and active.', 'buddypress-activity-link-preview' ), '<strong>' . esc_html( $bpquotes_plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
 	echo '</p></div>';
-	if ( isset( $_GET['activate'] ) ) {
-		unset( $_GET['activate'] );
+	if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
+		$activate = filter_input( INPUT_GET, 'activate' );
+		unset( $activate );
 	}
 }
 
@@ -318,7 +326,7 @@ add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_link_preview_data_emb
  * @return $response
  */
 function bp_activity_link_preview_data_embed_rest_api( $response, $request, $activity ) {
-	$bp_activity_link_data      = bp_activity_get_meta( $activity->id, '_bp_activity_link_preview_data', true );
+	$bp_activity_link_data              = bp_activity_get_meta( $activity->id, '_bp_activity_link_preview_data', true );
 	$response->data['bp_activity_link'] = $bp_activity_link_data;
 	return $response;
 }
