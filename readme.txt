@@ -35,6 +35,10 @@ The screenshots are present in the root of the plugin folder.
 1. screenshot-1
 
 == Changelog ==
+= 1.3.0 =
+* Fixed: Added activity link data in rest api activity endpoint
+* Fixed: PHPCS Fixes
+
 = 1.2.0 =
 * Fixed: (#6) - Fixed plugin-activated-when-buddypress-is-not-activated
 * Fixed: (#5) - Update spacing between text and buttons
