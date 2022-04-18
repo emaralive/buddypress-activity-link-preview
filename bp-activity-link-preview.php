@@ -205,8 +205,8 @@ function bp_activity_link_parse_url( $url ) {
  */
 function bp_activity_link_preview_save_link_data( $activity ) {
 	$bp_activity_nonce = isset( $_POST['_wpnonce_post_update'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce_post_update'] ) ) : '';
-	// Check for nonce security.
-	if ( ! wp_verify_nonce( $bp_activity_nonce, 'post_update' ) ) {
+	// Check for nonce security.	
+	if ( $bp_activity_nonce != '' &&  ! wp_verify_nonce( $bp_activity_nonce, 'post_update' ) ) {
 		die( 'Busted!' );
 	}
 	if ( isset( $_POST['link_url'] ) && isset( $_POST['link_title'] ) && isset( $_POST['link_description'] ) && isset( $_POST['link_image'] ) ) {
