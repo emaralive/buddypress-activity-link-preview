@@ -16,7 +16,7 @@ Hello, this is the BuddyPress Activity Link Preview stylesheet.
 --------------------------------------------------------------*/
 
 .activity-link-preview-container {
-    margin: 0 0 10px;
+    margin: 15px 0 0;
     padding: 25px;
     line-height: 1.5;
     color: #888;
@@ -26,6 +26,10 @@ Hello, this is the BuddyPress Activity Link Preview stylesheet.
     position: relative;
     overflow: auto;
     zoom: 1;
+}
+
+.activity-form .activity-link-preview-container {
+    margin: 0 0 15px;
 }
 
 .activity-video-preview .activity-link-preview-container {
