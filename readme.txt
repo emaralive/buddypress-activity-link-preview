@@ -4,7 +4,7 @@ Donate link: https://wbcomdesigns.com/donate/
 Tags: buddypress, Activity, Link Preview
 Requires at least: 3.0.1
 Tested up to: 5.9.3
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,10 @@ The screenshots are present in the root of the plugin folder.
 1. screenshot-1
 
 == Changelog ==
+= 1.4.0 =
+* Fixed: Added some spacing between link preview container and post button
+* Fixed: #18 - unable to comment and reply
+
 = 1.3.0 =
 * Fixed: Added activity link data in rest api activity endpoint
 * Fixed: PHPCS Fixes
